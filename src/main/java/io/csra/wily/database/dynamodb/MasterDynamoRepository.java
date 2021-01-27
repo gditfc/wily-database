@@ -2,7 +2,6 @@ package io.csra.wily.database.dynamodb;
 
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.document.*;
-import com.amazonaws.services.dynamodbv2.document.internal.InternalUtils;
 import com.amazonaws.services.dynamodbv2.document.spec.QuerySpec;
 import com.amazonaws.services.dynamodbv2.document.utils.ValueMap;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
@@ -49,7 +48,7 @@ public class MasterDynamoRepository {
                 List<Map<String, AttributeValue>> mapList = new ArrayList<>();
                 mapList.add(returnedItem);
 
-                t = mapper.readValue(mapper.writeValueAsString(InternalUtils.toItemList(mapList).get(0).asMap()), clazz);
+                t = mapper.readValue(mapper.writeValueAsString(ItemUtils.toItemList(mapList).get(0).asMap()), clazz);
             }
         } catch (Exception e) {
             LOGGER.error(e.getMessage(), e);
@@ -84,7 +83,7 @@ public class MasterDynamoRepository {
 
     protected void addEntry(Enum table, Object object) throws IOException {
         Map<String, AttributeValue> itemValues =
-                InternalUtils.toAttributeValues(
+                ItemUtils.toAttributeValues(
                         new Item().withJSON("document", mapper.writeValueAsString(nullifyStrings(object)))
                 ).get("document").getM();
         ddb.putItem(table.toString(), itemValues);
@@ -124,17 +123,18 @@ public class MasterDynamoRepository {
             expressionAttributeValues.put(expression.getExpressionAttributeValue().getKey(), expression.getExpressionAttributeValue().getValue());
         }
 
-        System.out.println(builder.build());
-        System.out.println(expressionAttributeValues);
+        String expression = builder.build();
 
-        ItemCollection<ScanOutcome> items = ddTable.scan(builder.build(), // FilterExpression
+        LOGGER.trace(expression);
+        LOGGER.trace(expressionAttributeValues.toString());
+
+        ItemCollection<ScanOutcome> items = ddTable.scan(expression, // FilterExpression
                 null, // ProjectionExpression
                 null, // ExpressionAttributeNames - not used in this example
                 expressionAttributeValues);
 
-        Iterator<Item> iterator = items.iterator();
-        while (iterator.hasNext()) {
-            t.add(mapper.readValue(iterator.next().toJSONPretty(), clazz));
+        for (Item item : items) {
+            t.add(mapper.readValue(item.toJSONPretty(), clazz));
         }
 
         return t;

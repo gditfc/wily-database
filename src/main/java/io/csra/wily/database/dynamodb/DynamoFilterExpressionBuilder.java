@@ -5,8 +5,8 @@ import java.util.List;
 
 public class DynamoFilterExpressionBuilder {
 
-    private List<String> expressionList = new ArrayList<>();
-    private List<DynamoExpressionAttribute> attributes = new ArrayList<>();
+    private final List<String> expressionList = new ArrayList<>();
+    private final List<DynamoExpressionAttribute> attributes = new ArrayList<>();
 
     public DynamoFilterExpressionBuilder expression(String expression) {
         expressionList.add(expression);
