@@ -54,7 +54,7 @@ public class MasterDatabaseConfiguration {
 			hikariConfig.setUsername(environment.getRequiredProperty("spring.datasource.username"));
 			hikariConfig.setPassword(environment.getRequiredProperty("spring.datasource.password"));
 
-			hikariConfig.setMaximumPoolSize(new Integer(environment.getRequiredProperty("spring.datasource.maximumPoolSize")));
+			hikariConfig.setMaximumPoolSize(Integer.parseInt(environment.getRequiredProperty("spring.datasource.maximumPoolSize")));
 			hikariConfig.setConnectionTestQuery(environment.getRequiredProperty("spring.datasource.connectionTestQuery"));
 			hikariConfig.setPoolName(environment.getRequiredProperty("spring.datasource.poolName"));
 

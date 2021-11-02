@@ -30,12 +30,9 @@ public class DynamoFilterExpressionBuilder {
     }
 
     public String build() {
-        String ret = "";
-        for(String expression: expressionList) {
-            ret += expression;
-        }
-
-        return ret;
+        StringBuilder ret = new StringBuilder();
+        expressionList.forEach(ret::append);
+        return ret.toString();
     }
 
     public List<DynamoExpressionAttribute> attributes() {

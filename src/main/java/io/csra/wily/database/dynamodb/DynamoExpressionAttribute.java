@@ -48,15 +48,11 @@ public class DynamoExpressionAttribute {
     }
 
     public String getFilterExpression() {
-        switch (operator) {
-            case "contains" :
-                return "contains(" + key + ", :" + key + ")";
-            case "equals" :
-                return key + " = :" + key;
-            case "notEquals" :
-                return key + " != :" + key;
-            default:
-                return "";
-        }
+        return switch (operator) {
+            case "contains" -> "contains(" + key + ", :" + key + ")";
+            case "equals" -> key + " = :" + key;
+            case "notEquals" -> key + " != :" + key;
+            default -> "";
+        };
     }
 }
