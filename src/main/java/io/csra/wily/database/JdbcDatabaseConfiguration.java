@@ -1,10 +1,10 @@
 package io.csra.wily.database;
 
-import javax.sql.DataSource;
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcCall;
+
+import javax.sql.DataSource;
 
 /**
  * If you choose not to leverage jOOQ, this jdbc configuration must be extended, which will provide you access to both
@@ -14,14 +14,14 @@ import org.springframework.jdbc.core.simple.SimpleJdbcCall;
  */
 public class JdbcDatabaseConfiguration extends MasterDatabaseConfiguration {
 
-	@Bean
-	public JdbcTemplate jdbcTemplate(DataSource dataSource) {
-		return new JdbcTemplate(dataSource);
-	}
+    @Bean
+    public JdbcTemplate jdbcTemplate(DataSource dataSource) {
+        return new JdbcTemplate(dataSource);
+    }
 
-	@Bean
-	public SimpleJdbcCall simpleJdbcCall(DataSource dataSource) {
-		return new SimpleJdbcCall(dataSource);
-	}
+    @Bean
+    public SimpleJdbcCall simpleJdbcCall(DataSource dataSource) {
+        return new SimpleJdbcCall(dataSource);
+    }
 
 }

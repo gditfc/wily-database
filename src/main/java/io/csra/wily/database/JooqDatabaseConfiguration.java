@@ -14,34 +14,33 @@ import org.springframework.jdbc.datasource.TransactionAwareDataSourceProxy;
  * choice using jOOQ Pro.
  *
  * @author ndimola
- *
  */
 public abstract class JooqDatabaseConfiguration extends MasterDatabaseConfiguration {
 
-	public abstract SQLDialect getSQLDialect();
+    public abstract SQLDialect getSQLDialect();
 
-	@Bean
-	public DataSourceConnectionProvider connectionProvider(TransactionAwareDataSourceProxy transactionAwareDataSource) {
-		return new DataSourceConnectionProvider(transactionAwareDataSource);
-	}
+    @Bean
+    public DataSourceConnectionProvider connectionProvider(TransactionAwareDataSourceProxy transactionAwareDataSource) {
+        return new DataSourceConnectionProvider(transactionAwareDataSource);
+    }
 
-	@Bean
-	public JooqExceptionTranslator exceptionTranslator() {
-		return new JooqExceptionTranslator();
-	}
+    @Bean
+    public JooqExceptionTranslator exceptionTranslator() {
+        return new JooqExceptionTranslator();
+    }
 
-	@Bean
-	public DefaultConfiguration jooqConfig(DataSourceConnectionProvider connectionProvider, JooqExceptionTranslator exceptionTranslator) {
-		DefaultConfiguration config = new DefaultConfiguration();
-		config.setSQLDialect(getSQLDialect());
-		config.setConnectionProvider(connectionProvider);
-		config.setExecuteListenerProvider(new DefaultExecuteListenerProvider(exceptionTranslator));
-		return config;
-	}
+    @Bean
+    public DefaultConfiguration jooqConfig(DataSourceConnectionProvider connectionProvider, JooqExceptionTranslator exceptionTranslator) {
+        DefaultConfiguration config = new DefaultConfiguration();
+        config.setSQLDialect(getSQLDialect());
+        config.setConnectionProvider(connectionProvider);
+        config.setExecuteListenerProvider(new DefaultExecuteListenerProvider(exceptionTranslator));
+        return config;
+    }
 
-	@Bean
-	public DefaultDSLContext dslContext(DefaultConfiguration jooqConfig) {
-		return new DefaultDSLContext(jooqConfig);
-	}
+    @Bean
+    public DefaultDSLContext dslContext(DefaultConfiguration jooqConfig) {
+        return new DefaultDSLContext(jooqConfig);
+    }
 
 }

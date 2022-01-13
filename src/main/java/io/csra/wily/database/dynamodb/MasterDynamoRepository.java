@@ -1,7 +1,14 @@
 package io.csra.wily.database.dynamodb;
 
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
-import com.amazonaws.services.dynamodbv2.document.*;
+import com.amazonaws.services.dynamodbv2.document.DynamoDB;
+import com.amazonaws.services.dynamodbv2.document.Index;
+import com.amazonaws.services.dynamodbv2.document.Item;
+import com.amazonaws.services.dynamodbv2.document.ItemCollection;
+import com.amazonaws.services.dynamodbv2.document.ItemUtils;
+import com.amazonaws.services.dynamodbv2.document.QueryOutcome;
+import com.amazonaws.services.dynamodbv2.document.ScanOutcome;
+import com.amazonaws.services.dynamodbv2.document.Table;
 import com.amazonaws.services.dynamodbv2.document.spec.QuerySpec;
 import com.amazonaws.services.dynamodbv2.document.utils.ValueMap;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
@@ -15,7 +22,11 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 public class MasterDynamoRepository {
 
@@ -113,13 +124,13 @@ public class MasterDynamoRepository {
         ddb.deleteItem(table.toString(), queryKey);
     }
 
-    protected <T> List<T> getListByExpression(Enum table, DynamoFilterExpressionBuilder builder, Class<T>  clazz) throws IOException {
+    protected <T> List<T> getListByExpression(Enum table, DynamoFilterExpressionBuilder builder, Class<T> clazz) throws IOException {
         List<T> t = new ArrayList<>();
 
         Table ddTable = dynamoDB.getTable(table.toString());
 
         Map<String, Object> expressionAttributeValues = new HashMap<>();
-        for(DynamoExpressionAttribute expression: builder.attributes()) {
+        for (DynamoExpressionAttribute expression : builder.attributes()) {
             expressionAttributeValues.put(expression.getExpressionAttributeValue().getKey(), expression.getExpressionAttributeValue().getValue());
         }
 

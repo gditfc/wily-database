@@ -1,7 +1,7 @@
 package io.csra.wily.database;
 
-import javax.sql.DataSource;
-
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,8 +14,7 @@ import org.springframework.jdbc.datasource.TransactionAwareDataSourceProxy;
 import org.springframework.jdbc.datasource.lookup.DataSourceLookupFailureException;
 import org.springframework.jdbc.datasource.lookup.JndiDataSourceLookup;
 
-import com.zaxxer.hikari.HikariConfig;
-import com.zaxxer.hikari.HikariDataSource;
+import javax.sql.DataSource;
 
 /**
  * Base RDBMS configuration. Offers up a dataSource that can be configured using jndi (spring.datasource.jndi).
@@ -27,58 +26,58 @@ import com.zaxxer.hikari.HikariDataSource;
  */
 public class MasterDatabaseConfiguration {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(MasterDatabaseConfiguration.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(MasterDatabaseConfiguration.class);
 
-	@Autowired
-	private Environment environment;
+    @Autowired
+    private Environment environment;
 
-	@Bean
-	public DataSource dataSource() {
-		final JndiDataSourceLookup dataSourceLookup = new JndiDataSourceLookup();
-		dataSourceLookup.setResourceRef(true);
+    @Bean
+    public DataSource dataSource() {
+        final JndiDataSourceLookup dataSourceLookup = new JndiDataSourceLookup();
+        dataSourceLookup.setResourceRef(true);
 
-		DataSource dataSource = null;
+        DataSource dataSource = null;
 
-		try {
-			dataSource = dataSourceLookup.getDataSource(environment.getRequiredProperty("spring.datasource.jndi"));
-		} catch (DataSourceLookupFailureException e) {
-			LOGGER.debug("Can't find JNDI Data Source", e);
-		}
+        try {
+            dataSource = dataSourceLookup.getDataSource(environment.getRequiredProperty("spring.datasource.jndi"));
+        } catch (DataSourceLookupFailureException e) {
+            LOGGER.debug("Can't find JNDI Data Source", e);
+        }
 
-		if (dataSource == null) {
-			LOGGER.info("JNDI Data Source Not Found, Using Embedded HikariCP.");
+        if (dataSource == null) {
+            LOGGER.info("JNDI Data Source Not Found, Using Embedded HikariCP.");
 
-			HikariConfig hikariConfig = new HikariConfig();
-			hikariConfig.setDriverClassName(environment.getRequiredProperty("spring.datasource.driverClassName"));
-			hikariConfig.setJdbcUrl(environment.getRequiredProperty("spring.datasource.url"));
-			hikariConfig.setUsername(environment.getRequiredProperty("spring.datasource.username"));
-			hikariConfig.setPassword(environment.getRequiredProperty("spring.datasource.password"));
+            HikariConfig hikariConfig = new HikariConfig();
+            hikariConfig.setDriverClassName(environment.getRequiredProperty("spring.datasource.driverClassName"));
+            hikariConfig.setJdbcUrl(environment.getRequiredProperty("spring.datasource.url"));
+            hikariConfig.setUsername(environment.getRequiredProperty("spring.datasource.username"));
+            hikariConfig.setPassword(environment.getRequiredProperty("spring.datasource.password"));
 
-			hikariConfig.setMaximumPoolSize(Integer.parseInt(environment.getRequiredProperty("spring.datasource.maximumPoolSize")));
-			hikariConfig.setConnectionTestQuery(environment.getRequiredProperty("spring.datasource.connectionTestQuery"));
-			hikariConfig.setPoolName(environment.getRequiredProperty("spring.datasource.poolName"));
+            hikariConfig.setMaximumPoolSize(Integer.parseInt(environment.getRequiredProperty("spring.datasource.maximumPoolSize")));
+            hikariConfig.setConnectionTestQuery(environment.getRequiredProperty("spring.datasource.connectionTestQuery"));
+            hikariConfig.setPoolName(environment.getRequiredProperty("spring.datasource.poolName"));
 
-			hikariConfig.addDataSourceProperty("dataSource.cachePrepStmts", environment.getRequiredProperty("spring.datasource.cachePrepStmts"));
-			hikariConfig.addDataSourceProperty("dataSource.prepStmtCacheSize", environment.getRequiredProperty("spring.datasource.prepStmtCacheSize"));
-			hikariConfig.addDataSourceProperty("dataSource.prepStmtCacheSqlLimit", environment.getRequiredProperty("spring.datasource.prepStmtCacheSqlLimit"));
-			hikariConfig.addDataSourceProperty("dataSource.useServerPrepStmts", environment.getRequiredProperty("spring.datasource.useServerPrepStmts"));
+            hikariConfig.addDataSourceProperty("dataSource.cachePrepStmts", environment.getRequiredProperty("spring.datasource.cachePrepStmts"));
+            hikariConfig.addDataSourceProperty("dataSource.prepStmtCacheSize", environment.getRequiredProperty("spring.datasource.prepStmtCacheSize"));
+            hikariConfig.addDataSourceProperty("dataSource.prepStmtCacheSqlLimit", environment.getRequiredProperty("spring.datasource.prepStmtCacheSqlLimit"));
+            hikariConfig.addDataSourceProperty("dataSource.useServerPrepStmts", environment.getRequiredProperty("spring.datasource.useServerPrepStmts"));
 
-			dataSource = new HikariDataSource(hikariConfig);
-		}
+            dataSource = new HikariDataSource(hikariConfig);
+        }
 
-		return dataSource;
-	}
+        return dataSource;
+    }
 
-	@Bean
-	public DataSourceTransactionManager transactionManager(DataSource dataSource) {
-		return new DataSourceTransactionManager(dataSource);
-	}
+    @Bean
+    public DataSourceTransactionManager transactionManager(DataSource dataSource) {
+        return new DataSourceTransactionManager(dataSource);
+    }
 
-	@Primary
-	@Bean
-	@DependsOn("dataSource")
-	public TransactionAwareDataSourceProxy transactionAwareDataSource(DataSource dataSource) {
-		return new TransactionAwareDataSourceProxy(dataSource);
-	}
+    @Primary
+    @Bean
+    @DependsOn("dataSource")
+    public TransactionAwareDataSourceProxy transactionAwareDataSource(DataSource dataSource) {
+        return new TransactionAwareDataSourceProxy(dataSource);
+    }
 
 }
