@@ -33,7 +33,7 @@
     </scm>
 
     <properties>
-        <wily-components.version>${project.parent.version}</wily-components.version>
+        <wily-components.version>2.6.2</wily-components.version>
     </properties>
 
     <parent>
