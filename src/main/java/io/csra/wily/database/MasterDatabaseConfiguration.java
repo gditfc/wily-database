@@ -63,6 +63,19 @@ public class MasterDatabaseConfiguration {
 			hikariConfig.addDataSourceProperty("dataSource.prepStmtCacheSqlLimit", environment.getRequiredProperty("spring.datasource.prepStmtCacheSqlLimit"));
 			hikariConfig.addDataSourceProperty("dataSource.useServerPrepStmts", environment.getRequiredProperty("spring.datasource.useServerPrepStmts"));
 
+            // Set optional configuration properties
+            String connectionTimeout = environment.getProperty("spring.datasource.connectionTimeout");
+
+            if (connectionTimeout != null) {
+                try {
+                    hikariConfig.setConnectionTimeout(Long.parseLong(connectionTimeout));
+                } catch (NumberFormatException e) {
+                    LOGGER.error("connectionTimeout does not have the appropriate format", e);
+                } catch (IllegalArgumentException e1) {
+                    LOGGER.error("connectionTimeout cannot be less than the lowest acceptable connection timeout", e1);
+                }
+            }
+
 			dataSource = new HikariDataSource(hikariConfig);
 		}
 
