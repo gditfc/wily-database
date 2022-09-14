@@ -27,7 +27,7 @@ package io.csra.wily.database;
 
 import org.jooq.ExecuteContext;
 import org.jooq.SQLDialect;
-import org.jooq.impl.DefaultExecuteListener;
+import org.jooq.ExecuteListener;
 import org.springframework.jdbc.support.SQLErrorCodeSQLExceptionTranslator;
 import org.springframework.jdbc.support.SQLExceptionTranslator;
 import org.springframework.jdbc.support.SQLStateSQLExceptionTranslator;
@@ -43,7 +43,7 @@ import org.springframework.jdbc.support.SQLStateSQLExceptionTranslator;
  *      href="http://www.petrikainulainen.net/programming/jooq/using-jooq-with-spring-configuration/">http://www.petrikainulainen.net/programming/jooq/using-jooq-with-spring-configuration/</a>
  * @see <a href="https://gist.github.com/azell/5655888">https://gist.github.com/azell/5655888</a>
  */
-public class JooqExceptionTranslator extends DefaultExecuteListener {
+public class JooqExceptionTranslator implements ExecuteListener {
 
 	/**
 	 * Generated UID
