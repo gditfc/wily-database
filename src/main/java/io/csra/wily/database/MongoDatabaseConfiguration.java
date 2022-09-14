@@ -63,10 +63,12 @@ public class MongoDatabaseConfiguration {
 
 			@Override
 			public void setLogWriter(PrintWriter out) throws SQLException {
+				// Default behavior for this method is a no-op.
 			}
 
 			@Override
 			public void setLoginTimeout(int seconds) throws SQLException {
+				// Default behavior for this method is a no-op.
 			}
 
 			@Override
