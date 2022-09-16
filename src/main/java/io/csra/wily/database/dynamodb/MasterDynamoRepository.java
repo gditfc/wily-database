@@ -126,7 +126,8 @@ public class MasterDynamoRepository {
         String expression = builder.build();
 
         LOGGER.trace(expression);
-        LOGGER.trace(expressionAttributeValues.toString());
+        String attributeValues = expressionAttributeValues.toString();
+        LOGGER.trace(attributeValues);
 
         ItemCollection<ScanOutcome> items = ddTable.scan(expression, // FilterExpression
                 null, // ProjectionExpression
